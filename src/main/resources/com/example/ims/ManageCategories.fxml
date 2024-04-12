@@ -13,8 +13,8 @@
   <content>
     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
          <children>
-            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="68.0" layoutX="137.0" layoutY="36.0" stroke="BLACK" strokeType="INSIDE" width="351.0" />
-            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="95.0" layoutX="137.0" layoutY="136.0" stroke="BLACK" strokeType="INSIDE" width="351.0" />
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#e7e7e7" height="68.0" layoutX="137.0" layoutY="36.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="351.0" />
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#e7e7e7" height="95.0" layoutX="137.0" layoutY="136.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="351.0" />
             <Text layoutX="144.0" layoutY="77.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Category Name" />
             <Text layoutX="145.0" layoutY="167.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Category to update" />
             <TextField fx:id="newCategoryNameTextField" layoutX="235.0" layoutY="57.0" />
@@ -33,7 +33,7 @@
                     <Font name="System Bold" size="12.0" />
                 </font>
              </Text>
-            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="68.0" layoutX="136.0" layoutY="260.0" stroke="BLACK" strokeType="INSIDE" width="351.0" />
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#e7e7e7" height="68.0" layoutX="136.0" layoutY="260.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="351.0" />
             <Text layoutX="143.0" layoutY="301.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Select Category" />
             <Button fx:id="deleteCategoryButton" layoutX="417.0" layoutY="281.0" mnemonicParsing="false" onAction="#deleteCategory" text="Delete" />
             <Text layoutX="143.0" layoutY="251.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Delete Category">
