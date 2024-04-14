@@ -9,6 +9,9 @@ import javafx.event.ActionEvent;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
 
 public class Controller {
     @FXML
@@ -30,7 +33,7 @@ public class Controller {
     private Button createAccountButton;
 
     @FXML
-    private Label errorMessageLabel;
+    private Label errorMessageLabel1;
 
     @FXML
     private Button loginButton;
@@ -52,11 +55,43 @@ public class Controller {
 
     @FXML
     void login(ActionEvent event) throws IOException {
-        root = FXMLLoader.load(getClass().getResource("Inventory.fxml"));
-        stage = (Stage) loginButton.getScene().getWindow();
-        scene = new Scene(root);
-        stage.setScene(scene);
-        stage.show();
+        if(usernameTextField1.getText().isBlank() == false && passwordTextField1.getText().isBlank() == false){
+            //Validate Login
+            validateLogin();
+        } else if (usernameTextField1.getText().isBlank() == true && passwordTextField1.getText().isBlank() == false){
+            errorMessageLabel1.setText("Please enter username!");
+        } else if (usernameTextField1.getText().isBlank() == false && passwordTextField1.getText().isBlank() == true){
+            errorMessageLabel1.setText("Please enter password!");
+        } else {
+            errorMessageLabel1.setText("Please enter username and password!");
+        }
+    }
+
+    //Login helper method:
+    public void validateLogin() throws IOException {
+        Model connectNow = new Model();
+        Connection connectDB = connectNow.getConnection();
+
+        String verifyLogin = "SELECT count(1) FROM accounts WHERE username = '" + usernameTextField1.getText() + "' AND password = '" + passwordTextField1.getText() + "'";
+
+        try {
+            Statement statement = connectDB.createStatement();
+            ResultSet queryResult = statement.executeQuery(verifyLogin);
+
+            while(queryResult.next()){
+                if(queryResult.getInt(1) == 1){
+                    root = FXMLLoader.load(getClass().getResource("Inventory.fxml"));
+                    stage = (Stage) loginButton.getScene().getWindow();
+                    scene = new Scene(root);
+                    stage.setScene(scene);
+                    stage.show();
+                } else {
+                    errorMessageLabel1.setText("Invalid login credentials! Please try again.");
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     //CreateAccount.fxml
@@ -70,12 +105,52 @@ public class Controller {
     private TextField usernameTextField2;
 
     @FXML
+    private Label errorMessageLabel2;
+
+    @FXML
     void saveAccount(ActionEvent event) throws IOException {
-        root = FXMLLoader.load(getClass().getResource("Login.fxml"));
-        stage = (Stage) saveAccountButton.getScene().getWindow();
-        scene = new Scene(root);
-        stage.setScene(scene);
-        stage.show();
+        if(usernameTextField2.getText().isBlank() == false && passwordTextField2.getText().isBlank() == false){
+            //Save Account
+            saveAccount();
+        } else if (usernameTextField2.getText().isBlank() == true && passwordTextField2.getText().isBlank() == false){
+            errorMessageLabel2.setText("Please enter username!");
+        } else if (usernameTextField2.getText().isBlank() == false && passwordTextField2.getText().isBlank() == true){
+            errorMessageLabel2.setText("Please enter password!");
+        } else {
+            errorMessageLabel2.setText("Please enter username and password!");
+        }
+    }
+
+    //Save Account helper method:
+    public void saveAccount() throws IOException {
+        Model connectNow = new Model();
+        Connection connectDB = connectNow.getConnection();
+
+        String username = usernameTextField2.getText();
+        String password = passwordTextField2.getText();
+
+        String accountExists = "SELECT count(1) FROM accounts WHERE username = '" + username + "'";
+        String insertFields = "INSERT INTO accounts(username, password) VALUES('" + username + "', '" + password + "')";
+
+        try {
+            Statement statement = connectDB.createStatement();
+            ResultSet queryResult = statement.executeQuery(accountExists);
+
+            while(queryResult.next()){
+                if(queryResult.getInt(1) == 1){
+                    errorMessageLabel2.setText("Username is in use! Try a different username.");
+                } else {
+                    statement.executeUpdate(insertFields);
+                    root = FXMLLoader.load(getClass().getResource("Login.fxml"));
+                    stage = (Stage) saveAccountButton.getScene().getWindow();
+                    scene = new Scene(root);
+                    stage.setScene(scene);
+                    stage.show();
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     //Inventory.fxml

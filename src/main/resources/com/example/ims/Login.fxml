@@ -18,7 +18,7 @@
             <Text layoutX="245.0" layoutY="235.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Don't have an account?" />
             <TextField fx:id="usernameTextField1" layoutX="229.0" layoutY="57.0" promptText="johndoe" />
             <PasswordField fx:id="passwordTextField1" layoutX="229.0" layoutY="97.0" promptText="pass123" />
-            <Label fx:id="errorMessageLabel" layoutX="257.0" layoutY="24.0" text="Invalid credentials!" textFill="RED" />
+            <Label fx:id="errorMessageLabel1" layoutX="206.0" layoutY="25.0" textFill="RED" />
             <Button fx:id="loginButton" layoutX="280.0" layoutY="164.0" mnemonicParsing="false" onAction="#login" text="Login" />
             <Button fx:id="createAccountButton" layoutX="254.0" layoutY="264.0" mnemonicParsing="false" onAction="#createAccount" text="Create Account" />
          </children></AnchorPane>

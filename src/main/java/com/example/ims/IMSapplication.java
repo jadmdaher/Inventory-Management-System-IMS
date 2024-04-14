@@ -12,7 +12,7 @@ public class IMSapplication extends Application {
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(IMSapplication.class.getResource("Login.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 600, 400);
-        stage.setTitle("Sofware Engineering Project");
+        stage.setTitle("Software Engineering Project");
         stage.setScene(scene);
         stage.show();
     }
