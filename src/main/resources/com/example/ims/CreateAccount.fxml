@@ -18,7 +18,7 @@
             <TextField fx:id="usernameTextField2" layoutX="229.0" layoutY="57.0" promptText="johndoe" />
             <PasswordField fx:id="passwordTextField2" layoutX="229.0" layoutY="97.0" promptText="pass123" />
             <Button fx:id="saveAccountButton" layoutX="261.0" layoutY="180.0" mnemonicParsing="false" onAction="#saveAccount" text="Save Account" />
-            <Label fx:id="errorMessageLabel2" layoutX="190.0" layoutY="25.0" textFill="RED" />
+            <Label fx:id="errorMessageLabel2" layoutY="25.0" prefHeight="18.0" prefWidth="600.0" stylesheets="@application.css" textAlignment="CENTER" textFill="RED" />
          </children></AnchorPane>
   </content>
    <font>
