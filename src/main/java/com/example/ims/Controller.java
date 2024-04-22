@@ -1,19 +1,23 @@
 package com.example.ims;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.event.ActionEvent;
 import javafx.stage.Stage;
-
 import java.io.IOException;
+import java.net.URL;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.ResourceBundle;
 
-public class Controller {
+public class Controller implements Initializable {
     @FXML
     private Label welcomeText;
 
@@ -226,12 +230,45 @@ public class Controller {
     private TextField productQuantityTextField1;
 
     @FXML
+    private ChoiceBox<?> categoryChoiceBox1;
+
+    @FXML
     void addProduct(ActionEvent event) throws IOException {
-        root = FXMLLoader.load(getClass().getResource("Inventory.fxml"));
-        stage = (Stage) addProductButton.getScene().getWindow();
-        scene = new Scene(root);
-        stage.setScene(scene);
-        stage.show();
+        Model connectNow = new Model();
+        Connection connectDB = connectNow.getConnection();
+
+        String productName = productNameTextField1.getText();
+        String productPrice = productPriceTextField1.getText();
+        String productQuantity = productQuantityTextField1.getText();
+        String category = categoryChoiceBox1.getValue().toString();
+
+        String productExists = "SELECT count(1) FROM accounts WHERE username = '" + productName + "'";
+        String insertFields;
+        if(category.isBlank()) {
+            insertFields = "INSERT INTO accounts(productName, price, quantity) VALUES('" + productName + "', '" + productPrice + "' + '" + productQuantity + "')";
+        } else {
+            insertFields = "INSERT INTO accounts(productName, price, quantity, category) VALUES('" + productName + "', '" + productPrice + "' + '" + productQuantity + "' + '" + category + "')";
+        }
+
+        try {
+            Statement statement = connectDB.createStatement();
+            ResultSet queryResult = statement.executeQuery(productExists);
+
+            while(queryResult.next()){
+                if(queryResult.getInt(1) == 1){
+                    errorMessageLabel2.setText("Username is in use! Try a different username.");
+                } else {
+                    statement.executeUpdate(insertFields);
+                    root = FXMLLoader.load(getClass().getResource("Inventory.fxml"));
+                    stage = (Stage) addProductButton.getScene().getWindow();
+                    scene = new Scene(root);
+                    stage.setScene(scene);
+                    stage.show();
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     //UpdateProduct.fxml
@@ -249,11 +286,35 @@ public class Controller {
 
     @FXML
     void updateProduct(ActionEvent event) throws IOException {
-        root = FXMLLoader.load(getClass().getResource("Inventory.fxml"));
-        stage = (Stage) updateProductButton.getScene().getWindow();
-        scene = new Scene(root);
-        stage.setScene(scene);
-        stage.show();
+        Model connectNow = new Model();
+        Connection connectDB = connectNow.getConnection();
+
+        String productName = productNameTextField2.getText();
+        String productPrice = productPriceTextField2.getText();
+        String productQuantity = productQuantityTextField2.getText();
+
+        String productExists = "SELECT count(1) FROM accounts WHERE username = '" + productName + "'";
+        String updateFields = "UPDATE accounts SET price = '" + productPrice + "', quantity = '" + productQuantity + "' WHERE productName = '" + productName + "'";
+
+        try {
+            Statement statement = connectDB.createStatement();
+            ResultSet queryResult = statement.executeQuery(productExists);
+
+            while(queryResult.next()){
+                if(queryResult.getInt(1) == 1){
+                    statement.executeUpdate(updateFields);
+                    root = FXMLLoader.load(getClass().getResource("Inventory.fxml"));
+                    stage = (Stage) updateProductButton.getScene().getWindow();
+                    scene = new Scene(root);
+                    stage.setScene(scene);
+                    stage.show();
+                } else {
+                    errorMessageLabel2.setText("Product does not exist! Please try again.");
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     //ManageCategories.fxml
@@ -283,7 +344,33 @@ public class Controller {
 
     @FXML
     void addCategory(ActionEvent event) {
+        Model connectNow = new Model();
+        Connection connectDB = connectNow.getConnection();
 
+        String newCategoryName = newCategoryNameTextField.getText();
+
+        String categoryExists = "SELECT count(1) FROM categories WHERE category = '" + newCategoryName + "'";
+        String insertFields = "INSERT INTO categories(category) VALUES('" + newCategoryName + "')";
+
+        try {
+            Statement statement = connectDB.createStatement();
+            ResultSet queryResult = statement.executeQuery(categoryExists);
+
+            while(queryResult.next()){
+                if(queryResult.getInt(1) == 1){
+                    errorMessageLabel2.setText("Category already exists! Try a different category name.");
+                } else {
+                    statement.executeUpdate(insertFields);
+                    root = FXMLLoader.load(getClass().getResource("Inventory.fxml"));
+                    stage = (Stage) addCategoryButton.getScene().getWindow();
+                    scene = new Scene(root);
+                    stage.setScene(scene);
+                    stage.show();
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML
@@ -303,5 +390,27 @@ public class Controller {
         scene = new Scene(root);
         stage.setScene(scene);
         stage.show();
+    }
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        //Initialize Inventory Table (TableView)
+        Model connectNow = new Model();
+        Connection connectDB = connectNow.getConnection();
+
+        String query = "SELECT productName, price, quantity, category FROM inventory";
+
+        ObservableList<Product> products = FXCollections.observableArrayList();
+
+        try{
+            Statement statement = connectDB.createStatement();
+            ResultSet queryResult = statement.executeQuery(query);
+
+            while(queryResult.next()){
+                products.add(new Product(queryResult.getString("productName"), queryResult.getString("price"), queryResult.getString("quantity"), queryResult.getString("category")));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
