@@ -9,6 +9,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.event.ActionEvent;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import java.io.IOException;
 import java.net.URL;
@@ -159,16 +160,34 @@ public class Controller implements Initializable {
 
     //Inventory.fxml
     @FXML
-    private Button manageAddProductButton;
+    private ChoiceBox<String> categoryChoiceBox;
 
     @FXML
-    private ChoiceBox<?> categoryChoiceBox;
+    private TableColumn<Product, String> columnCategory;
+
+    @FXML
+    private TableColumn<?, String> columnID;
+
+    @FXML
+    private TableColumn<?, ?> columnName;
+
+    @FXML
+    private TableColumn<?, ?> columnPrice;
+
+    @FXML
+    private TableColumn<?, ?> columnQuantity;
 
     @FXML
     private Button deleteProductButton;
 
     @FXML
+    private Button manageAddProductButton;
+
+    @FXML
     private Button manageCategoriesButton;
+
+    @FXML
+    private Button manageUpdateProductButton;
 
     @FXML
     private Button searchButton;
@@ -177,7 +196,7 @@ public class Controller implements Initializable {
     private TextField searchTextField;
 
     @FXML
-    private Button manageUpdateProductButton;
+    private TableView<Product> inventoryTableView;
 
     @FXML
     void manageAddProduct(ActionEvent event) throws IOException {
@@ -242,13 +261,13 @@ public class Controller implements Initializable {
         String productQuantity = productQuantityTextField1.getText();
         String category = categoryChoiceBox1.getValue().toString();
 
-        String productExists = "SELECT count(1) FROM accounts WHERE username = '" + productName + "'";
+        String productExists = "SELECT count(1) FROM ims.inventory WHERE username = '" + productName + "'";
         String insertFields;
-        if(category.isBlank()) {
-            insertFields = "INSERT INTO accounts(productName, price, quantity) VALUES('" + productName + "', '" + productPrice + "' + '" + productQuantity + "')";
-        } else {
-            insertFields = "INSERT INTO accounts(productName, price, quantity, category) VALUES('" + productName + "', '" + productPrice + "' + '" + productQuantity + "' + '" + category + "')";
-        }
+        //if(category.isBlank()) {
+            insertFields = "INSERT INTO ims.inventory(productName, price, quantity) VALUES('" + productName + "', '" + productPrice + "' + '" + productQuantity + "')";
+        //} else {
+            //insertFields = "INSERT INTO ims.inventory(productName, price, quantity, category) VALUES('" + productName + "', '" + productPrice + "' + '" + productQuantity + "' + '" + category + "')";
+        //}
 
         try {
             Statement statement = connectDB.createStatement();
@@ -398,7 +417,7 @@ public class Controller implements Initializable {
         Model connectNow = new Model();
         Connection connectDB = connectNow.getConnection();
 
-        String query = "SELECT productName, price, quantity, category FROM inventory";
+        String query = "SELECT * FROM inventory";
 
         ObservableList<Product> products = FXCollections.observableArrayList();
 
@@ -407,8 +426,16 @@ public class Controller implements Initializable {
             ResultSet queryResult = statement.executeQuery(query);
 
             while(queryResult.next()){
-                products.add(new Product(queryResult.getString("productName"), queryResult.getString("price"), queryResult.getString("quantity"), queryResult.getString("category")));
+                columnID.setCellValueFactory(new PropertyValueFactory<>("id"));
+                columnName.setCellValueFactory(new PropertyValueFactory<>("name"));
+                columnPrice.setCellValueFactory(new PropertyValueFactory<>("price"));
+                columnQuantity.setCellValueFactory(new PropertyValueFactory<>("quantity"));
+                columnCategory.setCellValueFactory(new PropertyValueFactory<>("category"));
+
+                products.add(new Product(queryResult.getInt("productID"), queryResult.getString("productName"), queryResult.getDouble("price"), queryResult.getInt("quantity"), queryResult.getString("category")));
             }
+
+            inventoryTableView.setItems(products);
         } catch (Exception e) {
             e.printStackTrace();
         }

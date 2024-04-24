@@ -17,7 +17,7 @@
             <TextField fx:id="searchTextField" layoutX="88.0" layoutY="26.0" promptText="Enter product name" />
             <Button fx:id="searchButton" layoutX="249.0" layoutY="26.0" mnemonicParsing="false" onAction="#search" text="Search" />
             <ChoiceBox fx:id="categoryChoiceBox" layoutX="437.0" layoutY="26.0" prefHeight="30.0" prefWidth="102.0" />
-            <TableView layoutX="57.0" layoutY="80.0" prefHeight="200.0" prefWidth="484.0">
+            <TableView fx:id="inventoryTableView" layoutX="57.0" layoutY="80.0" prefHeight="200.0" prefWidth="484.0">
               <columns>
                 <TableColumn fx:id="columnID" prefWidth="75.0" text="ID" />
                 <TableColumn fx:id="columnName" prefWidth="75.0" text="Name" />
